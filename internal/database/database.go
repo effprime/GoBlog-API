@@ -4,6 +4,8 @@ import (
 	"database/sql"
 	"fmt"
 
+	"log"
+
 	_ "github.com/lib/pq"
 )
 
@@ -32,7 +34,7 @@ func GetDatabaseConn() *sql.DB {
 		panic(err)
 	}
 
-	fmt.Println("Successfully connected!")
+	log.Output(2, "Database successfully connected...")
 
 	return db
 }

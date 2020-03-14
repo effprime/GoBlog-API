@@ -1,21 +1,14 @@
 package server
 
 import (
+	"goblog/internal/router"
 	"net/http"
 	"time"
-
-	"github.com/gorilla/mux"
 )
-
-//Handles requests to the API root endpoint
-func RootHandler(w http.ResponseWriter, r *http.Request) {
-	w.WriteHeader(http.StatusOK)
-}
 
 //GetServer returns an API server interface
 func GetServer() *http.Server {
-	r := mux.NewRouter()
-	r.HandleFunc("/", RootHandler)
+	r := router.GetRouter()
 
 	srv := &http.Server{
 		Handler:      r,
