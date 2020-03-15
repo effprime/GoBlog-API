@@ -4,8 +4,6 @@ import (
 	"database/sql"
 	"fmt"
 
-	"log"
-
 	_ "github.com/lib/pq"
 )
 
@@ -17,24 +15,30 @@ const (
 	dbname   = "goblog"
 )
 
-//GetDatabaseConn returns a database connection interface
-func GetDatabaseConn() *sql.DB {
-	psqlInfo := fmt.Sprintf(
-		"host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
-		host, port, user, password, dbname,
-	)
+var db *sql.DB
 
-	db, err := sql.Open("postgres", psqlInfo)
-	if err != nil {
-		panic(err)
+func GetDatabase() *sql.DB {
+	if db == nil {
+		psqlInfo := fmt.Sprintf(
+			"host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
+			host, port, user, password, dbname,
+		)
+		db, err := sql.Open("postgres", psqlInfo)
+		if err != nil {
+			panic(err)
+		}
+		return db
 	}
-
-	err = db.Ping()
-	if err != nil {
-		panic(err)
-	}
-
-	log.Output(2, "Database successfully connected...")
-
 	return db
+}
+
+func TestDatabaseConn() int {
+	db = GetDatabase()
+
+	err := db.Ping()
+	if err != nil {
+		panic(err)
+	}
+
+	return 0
 }

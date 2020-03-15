@@ -6,14 +6,14 @@ import (
 	"github.com/gorilla/mux"
 )
 
-//GetRouter returns a final router object for API use
 func GetRouter() *mux.Router {
 	r := mux.NewRouter()
 	saturateRoutes(r)
 	return r
 }
 
-//saturateRoutes adds routes to the router
 func saturateRoutes(r *mux.Router) {
 	r.HandleFunc("/", endpoints.RootHandler)
+	r.HandleFunc("/posts", endpoints.AllPostsHandler)
+	r.HandleFunc("/newpost", endpoints.NewPostHandler)
 }
