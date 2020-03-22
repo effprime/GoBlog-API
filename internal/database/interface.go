@@ -2,21 +2,10 @@ package database
 
 import (
 	"database/sql"
-	"fmt"
 	"goblog/internal/models"
 
 	_ "github.com/lib/pq"
 )
-
-const (
-	host     = "localhost"
-	port     = 5432
-	user     = "postgres"
-	password = "password"
-	dbname   = "goblog"
-)
-
-var db *sql.DB
 
 func NewPost(post models.Post) {
 	db := getDatabase()
@@ -38,7 +27,7 @@ func GetPosts(limit int) []models.Post {
 	var result *sql.Rows
 	var err error
 	db := getDatabase()
-	if limit == -1 {
+	if limit == 0 {
 		result, err = db.Query("SELECT * FROM public.post LIMIT $1", limit)
 	} else {
 		result, err = db.Query("SELECT * FROM public.post")
@@ -58,21 +47,6 @@ func GetPosts(limit int) []models.Post {
 		posts = append(posts, post)
 	}
 	return posts
-}
-
-func getDatabase() *sql.DB {
-	if db == nil {
-		psqlInfo := fmt.Sprintf(
-			"host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
-			host, port, user, password, dbname,
-		)
-		db, err := sql.Open("postgres", psqlInfo)
-		if err != nil {
-			panic(err)
-		}
-		return db
-	}
-	return db
 }
 
 func TestDatabaseConn() int {
