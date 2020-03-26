@@ -5,10 +5,19 @@ import (
 	"net/http"
 )
 
-func GetPostRequestData(r *http.Request, class interface{}) {
+func GetPostRequestData(r *http.Request, class interface{}) error {
 	decoder := json.NewDecoder(r.Body)
 	err := decoder.Decode(class)
 	if err != nil {
-		panic(err)
+		return err
+	}
+	return nil
+}
+
+func VerifyMethod(r *http.Request, method_target string) bool {
+	if r.Method == method_target {
+		return true
+	} else {
+		return false
 	}
 }

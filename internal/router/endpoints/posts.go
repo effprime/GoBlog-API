@@ -7,23 +7,121 @@ import (
 	"goblog/internal/utils"
 	"net/http"
 	"strconv"
-	"time"
 )
 
 func NewPostHandler(w http.ResponseWriter, r *http.Request) {
 	var post models.Post
+	var R models.HttpResponse
+	var code int
 
-	utils.GetPostRequestData(r, &post)
-	post.Posted = time.Now().String()
+	err := utils.GetPostRequestData(r, &post)
+	if err != nil {
+		code = http.StatusUnprocessableEntity
+		R.Status = "failure"
+		R.Message = "unable to create post object"
+	} else {
+		err = database.NewPost(post)
+		if err != nil {
+			code = http.StatusInternalServerError
+			R.Status = "failure"
+			R.Message = "unable to save post object"
+		} else {
+			code = http.StatusCreated
+			R.Status = "success"
+			R.Message = "new post created"
+		}
+	}
+	json.NewEncoder(w).Encode(R)
+	w.WriteHeader(code)
+}
 
-	database.NewPost(post)
+func DeletePostHandler(w http.ResponseWriter, r *http.Request) {
+	args, ok := r.URL.Query()["id"]
+	var id int
 
-	w.WriteHeader(http.StatusOK)
+	var R models.HttpResponse
+	var code int
+	if !ok || len(args[0]) < 1 {
+		code = http.StatusNotAcceptable
+		R.Status = "failure"
+		R.Message = "no ID value provided"
+	} else {
+		var err error
+		id, err = strconv.Atoi(args[0])
+		if err != nil {
+			code = http.StatusUnprocessableEntity
+			R.Status = "failure"
+			R.Message = err.Error()
+		} else {
+			err = database.DeletePost(id)
+			if err != nil {
+				code = http.StatusInternalServerError
+				R.Status = "failure"
+				R.Message = err.Error()
+			} else {
+				code = http.StatusOK
+				R.Status = "success"
+				R.Message = "post deleted"
+			}
+		}
+	}
+	json.NewEncoder(w).Encode(R)
+	w.WriteHeader(code)
+}
+
+func GetPostHandler(w http.ResponseWriter, r *http.Request) {
+	args, ok := r.URL.Query()["id"]
+	var id int
+
+	var R models.HttpResponse
+	var code int
+	if !ok || len(args[0]) < 1 {
+		code = http.StatusNotAcceptable
+		R.Status = "failure"
+		R.Message = "no ID value provided"
+	} else {
+		var err error
+		id, err = strconv.Atoi(args[0])
+		if err != nil {
+			code = http.StatusUnprocessableEntity
+			R.Status = "failure"
+			R.Message = err.Error()
+		} else {
+			post, err := database.GetPost(id)
+			if err != nil {
+				code = http.StatusInternalServerError
+				R.Status = "failure"
+				R.Message = err.Error()
+			} else if post.Id == 0 {
+				code = http.StatusNotFound
+				R.Status = "failure"
+				R.Message = "post not found"
+			} else {
+				post, err := json.Marshal(post)
+				if err != nil {
+					code = http.StatusInternalServerError
+					R.Status = "failure"
+					R.Message = "unable to create object"
+				} else {
+					code = http.StatusInternalServerError
+					R.Status = "success"
+					R.Message = "post retrieved"
+					R.Payload = json.RawMessage(post)
+				}
+
+			}
+		}
+	}
+	json.NewEncoder(w).Encode(R)
+	w.WriteHeader(code)
 }
 
 func AllPostsHandler(w http.ResponseWriter, r *http.Request) {
 	args, ok := r.URL.Query()["limit"]
 	var limit int
+
+	var R models.HttpResponse
+	var code int
 
 	if !ok || len(args[0]) < 1 {
 		limit = 0
@@ -35,5 +133,17 @@ func AllPostsHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	json.NewEncoder(w).Encode(database.GetPosts(limit))
+	_, posts, err := database.GetPosts(limit)
+	if err != nil {
+		code = http.StatusInternalServerError
+		R.Status = "failure"
+		R.Message = "unable to get posts"
+	} else {
+		code = http.StatusOK
+		R.Status = "success"
+		R.Message = "posts retrieved"
+		R.Payload = posts
+	}
+	json.NewEncoder(w).Encode(R)
+	w.WriteHeader(code)
 }
