@@ -17,7 +17,6 @@ func GetPostRequestData(r *http.Request, class interface{}) error {
 func VerifyMethod(r *http.Request, method_target string) bool {
 	if r.Method == method_target {
 		return true
-	} else {
-		return false
 	}
+	return false
 }

@@ -46,6 +46,7 @@ func GetPost(id int) (models.Post, error) {
 	if err != nil {
 		return post, err
 	}
+	defer result.Close()
 	for result.Next() {
 		err = result.Scan(&post.Title, &post.Posted, &post.Body, &post.Id)
 		if err != nil {
@@ -81,13 +82,13 @@ func GetPosts(limit int) ([]models.Post, json.RawMessage, error) {
 		posts = append(posts, post)
 	}
 
-	serialized_posts, err := json.Marshal(posts)
+	posts_as_json, err := json.Marshal(posts)
 	if err != nil {
 		return nil, nil, err
 	}
-	x := string(serialized_posts)
+	serialized_posts := string(posts_as_json)
 
-	return posts, json.RawMessage(x), nil
+	return posts, json.RawMessage(serialized_posts), nil
 }
 
 func TestDatabaseConn() {

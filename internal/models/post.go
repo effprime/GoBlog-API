@@ -6,5 +6,3 @@ type Post struct {
 	Body   string `json:"body"`
 	Id     int    `json:"id"`
 }
-
-type PostSet []Post
