@@ -1,0 +1,9 @@
+version: '3'
+
+services:
+
+    goblog:
+        container_name: goblog_api_prod
+        image: effprime/goblog-api:latest
+        ports:
+            - "${HOST_PORT}:${CONTAINER_PORT}"

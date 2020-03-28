@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+
+    goblog:
+        container_name: goblog_api_dev
+        image: effprime/goblog-api:dev
+        build:
+            context: .
+            dockerfile: Dockerfile.dev
+        environment:
+            - DEBUG=1
+        ports:
+            - "5432:5432"
