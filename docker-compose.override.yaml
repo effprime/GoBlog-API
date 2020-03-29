@@ -10,5 +10,3 @@ services:
             dockerfile: Dockerfile.dev
         environment:
             - DEBUG=1
-        ports:
-            - "5432:5432"

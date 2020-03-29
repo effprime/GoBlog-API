@@ -7,14 +7,6 @@ import (
 
 var db *sql.DB
 
-const (
-	host     = "localhost"
-	port     = 5432
-	user     = "postgres"
-	password = "password"
-	dbname   = "goblog"
-)
-
 func getDatabase() *sql.DB {
 	if db == nil {
 		psqlInfo := fmt.Sprintf(
