@@ -2,6 +2,7 @@ package utils
 
 import (
 	"encoding/json"
+	"goblog/internal/models"
 	"net/http"
 )
 
@@ -14,9 +15,7 @@ func GetPostRequestData(r *http.Request, class interface{}) error {
 	return nil
 }
 
-func VerifyMethod(r *http.Request, method_target string) bool {
-	if r.Method == method_target {
-		return true
-	}
-	return false
+func MakeResponse(w http.ResponseWriter, code int, R models.HttpResponse) {
+	json.NewEncoder(w).Encode(R)
+	w.WriteHeader(code)
 }

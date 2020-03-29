@@ -14,7 +14,7 @@ func NewPostHandler(w http.ResponseWriter, r *http.Request) {
 	var R models.HttpResponse
 	var code int
 
-	if utils.VerifyMethod(r, "POST") {
+	if r.Method == "POST" {
 		err := utils.GetPostRequestData(r, &post)
 		if err != nil {
 			code = http.StatusUnprocessableEntity
@@ -37,8 +37,7 @@ func NewPostHandler(w http.ResponseWriter, r *http.Request) {
 		R.Status = "failure"
 		R.Message = "method not allowed"
 	}
-	json.NewEncoder(w).Encode(R)
-	w.WriteHeader(code)
+	utils.MakeResponse(w, code, R)
 }
 
 func DeletePostHandler(w http.ResponseWriter, r *http.Request) {
@@ -48,7 +47,7 @@ func DeletePostHandler(w http.ResponseWriter, r *http.Request) {
 	var R models.HttpResponse
 	var code int
 
-	if utils.VerifyMethod(r, "POST") {
+	if r.Method == "POST" {
 		if !ok || len(args[0]) < 1 {
 			code = http.StatusNotAcceptable
 			R.Status = "failure"
@@ -78,8 +77,7 @@ func DeletePostHandler(w http.ResponseWriter, r *http.Request) {
 		R.Status = "failure"
 		R.Message = "method not allowed"
 	}
-	json.NewEncoder(w).Encode(R)
-	w.WriteHeader(code)
+	utils.MakeResponse(w, code, R)
 }
 
 func GetPostHandler(w http.ResponseWriter, r *http.Request) {
@@ -89,7 +87,7 @@ func GetPostHandler(w http.ResponseWriter, r *http.Request) {
 	var R models.HttpResponse
 	var code int
 
-	if utils.VerifyMethod(r, "GET") {
+	if r.Method == "GET" {
 		if !ok || len(args[0]) < 1 {
 			code = http.StatusNotAcceptable
 			R.Status = "failure"
@@ -131,8 +129,7 @@ func GetPostHandler(w http.ResponseWriter, r *http.Request) {
 		R.Status = "failure"
 		R.Message = "method not allowed"
 	}
-	json.NewEncoder(w).Encode(R)
-	w.WriteHeader(code)
+	utils.MakeResponse(w, code, R)
 }
 
 func AllPostsHandler(w http.ResponseWriter, r *http.Request) {
@@ -142,7 +139,7 @@ func AllPostsHandler(w http.ResponseWriter, r *http.Request) {
 	var R models.HttpResponse
 	var code int
 
-	if utils.VerifyMethod(r, "GET") {
+	if r.Method == "GET" {
 		if !ok || len(args[0]) < 1 {
 			limit = 0
 		} else {
@@ -168,6 +165,5 @@ func AllPostsHandler(w http.ResponseWriter, r *http.Request) {
 		R.Status = "failure"
 		R.Message = "method not allowed"
 	}
-	json.NewEncoder(w).Encode(R)
-	w.WriteHeader(code)
+	utils.MakeResponse(w, code, R)
 }
