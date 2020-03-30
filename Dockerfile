@@ -9,7 +9,7 @@ RUN go build -o / /usr/local/go/src/goblog/cmd/blog/main.go
 
 ### Final stage
 
-FROM golang:alpine
+FROM golang:alpine as production
 
 COPY --from=builder /main /app/main
 WORKDIR /app/

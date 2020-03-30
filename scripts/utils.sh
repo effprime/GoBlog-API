@@ -2,10 +2,12 @@ docker_build() {
   if [[ $1 == "prod" ]]
   then
     tag=$VERSION
+    target="production"
   else
     tag=dev-$VERSION
+    target="builder"
   fi
-  docker build -t effprime/goblog-api:$tag .
+  docker build -t effprime/goblog-api:$tag --target=$target .
 }
 docker_logs() {
   if [[ $1 == "prod" ]]
