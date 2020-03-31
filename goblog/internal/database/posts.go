@@ -6,14 +6,12 @@ import (
 	"errors"
 	"goblog/internal/models"
 	"time"
-
-	_ "github.com/lib/pq"
 )
 
 func NewPost(post models.Post) error {
 	db := getDatabase()
 	_, err := db.Exec(
-		"INSERT INTO public.post (title, posted, body) VALUES ($1, $2, $3)",
+		"INSERT INTO post (title, posted, body) VALUES ($1, $2, $3)",
 		post.Title,
 		time.Now(),
 		post.Body,

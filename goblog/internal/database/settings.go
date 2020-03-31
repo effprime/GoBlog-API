@@ -5,8 +5,8 @@ import (
 	"strconv"
 )
 
-var host = os.Getenv("DB_HOST")
-var port, _ = strconv.Atoi(os.Getenv("DB_PORT"))
-var user = os.Getenv("DB_USER")
-var password = os.Getenv("DB_PASS")
+var host = os.Getenv("DB_ADDRESS")
+var port, _ = strconv.Atoi(os.Getenv("DB_ACCESS_PORT"))
+var user = os.Getenv("DB_USERNAME")
+var password = os.Getenv("DB_PASSWORD")
 var dbname = os.Getenv("DB_NAME")

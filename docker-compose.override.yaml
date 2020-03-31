@@ -3,7 +3,7 @@ version: '3'
 services:
 
     goblog:
-        container_name: goblog_api_dev-1.0
+        container_name: goblog_api_dev
         image: effprime/goblog-api:dev-1.0
         build:
             context: .

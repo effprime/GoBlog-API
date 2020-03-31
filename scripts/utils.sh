@@ -15,7 +15,7 @@ docker_logs() {
     container=goblog_api_prod
   elif [[ $1 == "dev" ]]
   then
-    container=goblog_api_dev-$VERSION
+    container=goblog_api_dev
   fi
   docker logs $container -f
 }

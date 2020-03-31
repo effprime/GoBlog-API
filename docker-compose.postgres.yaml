@@ -8,6 +8,11 @@ services:
         ports:
             - "5432:5432"
         environment:
-            - POSTGRES_USER=postgres
-            - POSTGRES_PASS=password
-            - POSTGRES_DB=goblog
+            - POSTGRES_USER=${DB_USERNAME}
+            - POSTGRES_PASS=${DB_PASSWORD}
+            - POSTGRES_DB=${DB_NAME}
+        volumes:
+            - goblog_db:/var/lib/postgresql/data/
+
+volumes:
+    goblog_db:

@@ -18,13 +18,13 @@ func NewPostHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		code = http.StatusUnprocessableEntity
 		R.Status = "failure"
-		R.Message = "unable to create post object"
+		R.Message = err.Error()
 	} else {
 		err = database.NewPost(post)
 		if err != nil {
 			code = http.StatusInternalServerError
 			R.Status = "failure"
-			R.Message = "unable to save post object"
+			R.Message = err.Error()
 		} else {
 			code = http.StatusCreated
 			R.Status = "success"
@@ -101,7 +101,7 @@ func GetPostHandler(w http.ResponseWriter, r *http.Request) {
 				if err != nil {
 					code = http.StatusInternalServerError
 					R.Status = "failure"
-					R.Message = "unable to create object"
+					R.Message = err.Error()
 				} else {
 					code = http.StatusInternalServerError
 					R.Status = "success"
@@ -134,7 +134,7 @@ func AllPostsHandler(w http.ResponseWriter, r *http.Request) {
 	if err != nil {
 		code = http.StatusInternalServerError
 		R.Status = "failure"
-		R.Message = "unable to get posts"
+		R.Message = err.Error()
 	} else {
 		code = http.StatusOK
 		R.Status = "success"
