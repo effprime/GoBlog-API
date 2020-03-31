@@ -90,12 +90,3 @@ func GetPosts(limit int) ([]models.Post, json.RawMessage, error) {
 
 	return posts, json.RawMessage(serialized_posts), nil
 }
-
-func TestDatabaseConn() {
-	db = getDatabase()
-
-	err := db.Ping()
-	if err != nil {
-		panic(err)
-	}
-}

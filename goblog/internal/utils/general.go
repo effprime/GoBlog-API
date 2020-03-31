@@ -16,6 +16,6 @@ func GetPostRequestData(r *http.Request, class interface{}) error {
 }
 
 func MakeResponse(w http.ResponseWriter, code int, R models.HttpResponse) {
-	json.NewEncoder(w).Encode(R)
 	w.WriteHeader(code)
+	json.NewEncoder(w).Encode(R)
 }

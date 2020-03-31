@@ -14,28 +14,22 @@ func NewPostHandler(w http.ResponseWriter, r *http.Request) {
 	var R models.HttpResponse
 	var code int
 
-	if r.Method == "POST" {
-		err := utils.GetPostRequestData(r, &post)
-		if err != nil {
-			code = http.StatusUnprocessableEntity
-			R.Status = "failure"
-			R.Message = "unable to create post object"
-		} else {
-			err = database.NewPost(post)
-			if err != nil {
-				code = http.StatusInternalServerError
-				R.Status = "failure"
-				R.Message = "unable to save post object"
-			} else {
-				code = http.StatusCreated
-				R.Status = "success"
-				R.Message = "new post created"
-			}
-		}
-	} else {
-		code = 405
+	err := utils.GetPostRequestData(r, &post)
+	if err != nil {
+		code = http.StatusUnprocessableEntity
 		R.Status = "failure"
-		R.Message = "method not allowed"
+		R.Message = "unable to create post object"
+	} else {
+		err = database.NewPost(post)
+		if err != nil {
+			code = http.StatusInternalServerError
+			R.Status = "failure"
+			R.Message = "unable to save post object"
+		} else {
+			code = http.StatusCreated
+			R.Status = "success"
+			R.Message = "new post created"
+		}
 	}
 	utils.MakeResponse(w, code, R)
 }
@@ -47,35 +41,29 @@ func DeletePostHandler(w http.ResponseWriter, r *http.Request) {
 	var R models.HttpResponse
 	var code int
 
-	if r.Method == "POST" {
-		if !ok || len(args[0]) < 1 {
-			code = http.StatusNotAcceptable
+	if !ok || len(args[0]) < 1 {
+		code = http.StatusNotAcceptable
+		R.Status = "failure"
+		R.Message = "no ID value provided"
+	} else {
+		var err error
+		id, err = strconv.Atoi(args[0])
+		if err != nil {
+			code = http.StatusUnprocessableEntity
 			R.Status = "failure"
-			R.Message = "no ID value provided"
+			R.Message = err.Error()
 		} else {
-			var err error
-			id, err = strconv.Atoi(args[0])
+			err = database.DeletePost(id)
 			if err != nil {
-				code = http.StatusUnprocessableEntity
+				code = http.StatusInternalServerError
 				R.Status = "failure"
 				R.Message = err.Error()
 			} else {
-				err = database.DeletePost(id)
-				if err != nil {
-					code = http.StatusInternalServerError
-					R.Status = "failure"
-					R.Message = err.Error()
-				} else {
-					code = http.StatusOK
-					R.Status = "success"
-					R.Message = "post deleted"
-				}
+				code = http.StatusOK
+				R.Status = "success"
+				R.Message = "post deleted"
 			}
 		}
-	} else {
-		code = 405
-		R.Status = "failure"
-		R.Message = "method not allowed"
 	}
 	utils.MakeResponse(w, code, R)
 }
@@ -87,47 +75,41 @@ func GetPostHandler(w http.ResponseWriter, r *http.Request) {
 	var R models.HttpResponse
 	var code int
 
-	if r.Method == "GET" {
-		if !ok || len(args[0]) < 1 {
-			code = http.StatusNotAcceptable
+	if !ok || len(args[0]) < 1 {
+		code = http.StatusNotAcceptable
+		R.Status = "failure"
+		R.Message = "no ID value provided"
+	} else {
+		var err error
+		id, err = strconv.Atoi(args[0])
+		if err != nil {
+			code = http.StatusUnprocessableEntity
 			R.Status = "failure"
-			R.Message = "no ID value provided"
+			R.Message = err.Error()
 		} else {
-			var err error
-			id, err = strconv.Atoi(args[0])
+			post, err := database.GetPost(id)
 			if err != nil {
-				code = http.StatusUnprocessableEntity
+				code = http.StatusInternalServerError
 				R.Status = "failure"
 				R.Message = err.Error()
+			} else if post.Id == 0 {
+				code = http.StatusNotFound
+				R.Status = "failure"
+				R.Message = "post not found"
 			} else {
-				post, err := database.GetPost(id)
+				post, err := json.Marshal(post)
 				if err != nil {
 					code = http.StatusInternalServerError
 					R.Status = "failure"
-					R.Message = err.Error()
-				} else if post.Id == 0 {
-					code = http.StatusNotFound
-					R.Status = "failure"
-					R.Message = "post not found"
+					R.Message = "unable to create object"
 				} else {
-					post, err := json.Marshal(post)
-					if err != nil {
-						code = http.StatusInternalServerError
-						R.Status = "failure"
-						R.Message = "unable to create object"
-					} else {
-						code = http.StatusInternalServerError
-						R.Status = "success"
-						R.Message = "post retrieved"
-						R.Payload = json.RawMessage(post)
-					}
+					code = http.StatusInternalServerError
+					R.Status = "success"
+					R.Message = "post retrieved"
+					R.Payload = json.RawMessage(post)
 				}
 			}
 		}
-	} else {
-		code = 405
-		R.Status = "failure"
-		R.Message = "method not allowed"
 	}
 	utils.MakeResponse(w, code, R)
 }
@@ -139,31 +121,25 @@ func AllPostsHandler(w http.ResponseWriter, r *http.Request) {
 	var R models.HttpResponse
 	var code int
 
-	if r.Method == "GET" {
-		if !ok || len(args[0]) < 1 {
-			limit = 0
-		} else {
-			var err error
-			limit, err = strconv.Atoi(args[0])
-			if err != nil {
-				limit = 0
-			}
-		}
-		_, posts, err := database.GetPosts(limit)
-		if err != nil {
-			code = http.StatusInternalServerError
-			R.Status = "failure"
-			R.Message = "unable to get posts"
-		} else {
-			code = http.StatusOK
-			R.Status = "success"
-			R.Message = "posts retrieved"
-			R.Payload = posts
-		}
+	if !ok || len(args[0]) < 1 {
+		limit = 0
 	} else {
-		code = 405
+		var err error
+		limit, err = strconv.Atoi(args[0])
+		if err != nil {
+			limit = 0
+		}
+	}
+	_, posts, err := database.GetPosts(limit)
+	if err != nil {
+		code = http.StatusInternalServerError
 		R.Status = "failure"
-		R.Message = "method not allowed"
+		R.Message = "unable to get posts"
+	} else {
+		code = http.StatusOK
+		R.Status = "success"
+		R.Message = "posts retrieved"
+		R.Payload = posts
 	}
 	utils.MakeResponse(w, code, R)
 }

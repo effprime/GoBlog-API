@@ -3,8 +3,8 @@ version: '3'
 services:
 
     goblog:
-        container_name: goblog_api_dev
-        image: effprime/goblog-api:dev
+        container_name: goblog_api_dev-1.0
+        image: effprime/goblog-api:dev-1.0
         build:
             context: .
             dockerfile: Dockerfile.dev

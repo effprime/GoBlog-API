@@ -4,7 +4,7 @@ services:
 
     goblog:
         container_name: goblog_api_prod
-        image: effprime/goblog-api:latest
+        image: effprime/goblog-api:1.0
         ports:
             - "${HOST_PORT}:${CONTAINER_PORT}"
         env_file: .env

@@ -4,14 +4,18 @@ import (
 	"goblog/internal/router"
 	"log"
 	"net/http"
+	"os"
 	"time"
 )
 
+var port = os.Getenv("CONTAINER_PORT")
+
 func Start() int {
+	address := "0.0.0.0:" + port
 	r := router.GetRouter()
 	srv := &http.Server{
 		Handler:      r,
-		Addr:         "127.0.0.1:8000",
+		Addr:         address,
 		WriteTimeout: 15 * time.Second,
 		ReadTimeout:  15 * time.Second,
 	}

@@ -21,3 +21,12 @@ func getDatabase() *sql.DB {
 	}
 	return db
 }
+
+func TestDatabaseConn() {
+	db = getDatabase()
+
+	err := db.Ping()
+	if err != nil {
+		panic(err)
+	}
+}
