@@ -1,6 +1,7 @@
 package endpoints
 
 import (
+	"goblog/internal/auth"
 	"goblog/internal/database"
 	"goblog/internal/models"
 	"goblog/internal/utils"
@@ -13,7 +14,7 @@ func NewUserHandler(w http.ResponseWriter, r *http.Request) {
 	var code int
 
 	err := utils.GetPostRequestData(r, &user)
-	user.HashedPassword = utils.GenerateHash(user.HashedPassword)
+	user.HashedPassword = auth.GenerateHash(user.HashedPassword)
 	if err != nil {
 		code = http.StatusUnprocessableEntity
 		R.Status = "failure"

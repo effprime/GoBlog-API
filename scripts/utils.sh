@@ -21,7 +21,7 @@ docker_logs() {
 }
 wrap_compose() {
   prod_compose="docker-compose"
-  dev_compose="$prod_compose -f docker-compose.postgres.yaml -f docker-compose.yaml -f docker-compose.override.yaml"
+  dev_compose="$prod_compose -f docker-compose.yaml -f docker-compose.override.yaml"
   if [[ $1 == "up" ]]
   then
     if [[ $2 == "prod" ]]

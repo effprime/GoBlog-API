@@ -1,10 +1,8 @@
-package utils
+package auth
 
 import (
-	"crypto/rand"
 	"crypto/sha1"
 	"encoding/hex"
-	"fmt"
 )
 
 func GenerateHash(s string) string {
@@ -14,17 +12,11 @@ func GenerateHash(s string) string {
 	return hash
 }
 
-func ValidateHash(input string, hash string) bool {
+func validateHash(input string, hash string) bool {
 	to_check := GenerateHash(input)
 	if to_check == hash {
 		return true
 	} else {
 		return false
 	}
-}
-
-func GenerateToken() string {
-	b := make([]byte, 4)
-	rand.Read(b)
-	return fmt.Sprintf("%x", b)
 }
