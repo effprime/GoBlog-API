@@ -11,7 +11,8 @@ import (
 func NewPost(post models.Post) error {
 	db := getDatabase()
 	_, err := db.Exec(
-		"INSERT INTO post (title, posted, body) VALUES ($1, $2, $3)",
+		"INSERT INTO blog.post (username, title, posted, body) VALUES ($1, $2, $3, $4)",
+		post.Username,
 		post.Title,
 		time.Now(),
 		post.Body,
@@ -30,7 +31,7 @@ func DeletePost(id int) error {
 		return errors.New("no post found")
 	}
 	db := getDatabase()
-	_, err = db.Exec("DELETE FROM public.post WHERE id=$1", id)
+	_, err = db.Exec("DELETE FROM blog.post WHERE id=$1", id)
 	if err != nil {
 		return err
 	}
@@ -40,13 +41,13 @@ func DeletePost(id int) error {
 func GetPost(id int) (models.Post, error) {
 	var post models.Post
 	db := getDatabase()
-	result, err := db.Query("SELECT * FROM public.post where id=$1", id)
+	result, err := db.Query("SELECT * FROM blog.post where id=$1", id)
 	if err != nil {
 		return post, err
 	}
 	defer result.Close()
 	for result.Next() {
-		err = result.Scan(&post.Title, &post.Posted, &post.Body, &post.Id)
+		err = result.Scan(&post.Username, &post.Title, &post.Posted, &post.Body, &post.Id)
 		if err != nil {
 			return post, err
 		}
@@ -63,7 +64,7 @@ func GetPosts(limit int) ([]models.Post, json.RawMessage, error) {
 	if limit == 0 {
 		result, err = db.Query("SELECT * FROM public.post")
 	} else {
-		result, err = db.Query("SELECT * FROM public.post LIMIT $1", limit)
+		result, err = db.Query("SELECT * FROM blog.post LIMIT $1", limit)
 	}
 	if err != nil {
 		return nil, nil, err

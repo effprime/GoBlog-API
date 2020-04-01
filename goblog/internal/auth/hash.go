@@ -13,8 +13,7 @@ func GenerateHash(s string) string {
 }
 
 func validateHash(input string, hash string) bool {
-	to_check := GenerateHash(input)
-	if to_check == hash {
+	if GenerateHash(input) == hash {
 		return true
 	} else {
 		return false

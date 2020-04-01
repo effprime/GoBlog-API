@@ -13,7 +13,7 @@ func getDatabase() *sql.DB {
 	if db == nil {
 		psqlInfo := fmt.Sprintf(
 			"host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
-			host, port, user, password, dbname,
+			DB_HOST, DB_PORT, DB_USER, DB_PASSWORD, DB_NAME,
 		)
 		var err error
 		db, err = sql.Open("postgres", psqlInfo)

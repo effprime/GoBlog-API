@@ -4,14 +4,11 @@ import (
 	"goblog/internal/router"
 	"log"
 	"net/http"
-	"os"
 	"time"
 )
 
-var port = os.Getenv("CONTAINER_PORT")
-
 func Start() int {
-	address := "0.0.0.0:" + port
+	address := "0.0.0.0:" + HTTP_PORT
 	r := router.GetRouter()
 	srv := &http.Server{
 		Handler:      r,

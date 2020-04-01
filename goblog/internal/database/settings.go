@@ -1,12 +1,12 @@
 package database
 
 import (
-	"os"
+	"goblog/internal/utils"
 	"strconv"
 )
 
-var host = os.Getenv("DB_ADDRESS")
-var port, _ = strconv.Atoi(os.Getenv("DB_ACCESS_PORT"))
-var user = os.Getenv("DB_USERNAME")
-var password = os.Getenv("DB_PASSWORD")
-var dbname = os.Getenv("DB_NAME")
+var DB_HOST = utils.GetEnv("DB_ADDRESS", "")
+var DB_PORT, _ = strconv.Atoi(utils.GetEnv("DB_ACCESS_PORT", ""))
+var DB_USER = utils.GetEnv("DB_USERNAME", "")
+var DB_PASSWORD = utils.GetEnv("DB_PASSWORD", "")
+var DB_NAME = utils.GetEnv("DB_NAME", "")
