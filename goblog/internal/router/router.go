@@ -25,4 +25,7 @@ func saturateRoutes(r *mux.Router) {
 	if AUTH_REQUIRED == "1" {
 		r.Use(auth.Middleware)
 	}
+	if ALLOW_CORS == "1" {
+		r.Methods("OPTIONS").HandlerFunc(endpoints.HandleCorsRequest)
+	}
 }
