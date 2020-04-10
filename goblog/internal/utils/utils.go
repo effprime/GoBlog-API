@@ -17,6 +17,7 @@ func GetPostRequestData(r *http.Request, class interface{}) error {
 }
 
 func MakeResponse(w http.ResponseWriter, code int, R models.HttpResponse) {
+	w.Header().Set("Access-Control-Allow-Origin", "*")
 	w.WriteHeader(code)
 	json.NewEncoder(w).Encode(R)
 }
