@@ -21,7 +21,7 @@ func TokenHandler(w http.ResponseWriter, r *http.Request) {
 	} else {
 		token, err := auth.GetToken(possibleUser)
 		if err != nil {
-			code = http.StatusInternalServerError
+			code = http.StatusUnauthorized
 			R.Status = "failure"
 			R.Message = err.Error()
 		} else {
