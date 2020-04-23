@@ -15,7 +15,9 @@ func GetRouter() *mux.Router {
 
 func saturateRoutes(r *mux.Router) {
 	r.HandleFunc("/", endpoints.RootHandler).Methods("GET")
-	r.HandleFunc("/auth/token", endpoints.TokenHandler).Methods("POST")
+	r.HandleFunc("/auth/token", endpoints.GetTokenHandler).Methods("POST")
+	r.HandleFunc("/auth/valid", endpoints.TestTokenHandler).Methods("POST")
+
 	r.HandleFunc("/api/getpost", endpoints.GetPostHandler).Methods("GET")
 	r.HandleFunc("/api/posts", endpoints.AllPostsHandler).Methods("GET")
 	r.HandleFunc("/api/newpost", endpoints.NewPostHandler).Methods("POST")

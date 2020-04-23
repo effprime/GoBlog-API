@@ -32,3 +32,12 @@ func GetToken(possibleUser models.PossibleUser) (models.Token, error) {
 		return models.Token{}, errors.New(incorrect_error)
 	}
 }
+
+func CheckToken(username string, token models.Token) bool {
+	if savedToken, ok := session_tokens[username]; ok {
+		if validateHash(token.Value, savedToken.Value) {
+			return true
+		}
+	}
+	return false
+}
